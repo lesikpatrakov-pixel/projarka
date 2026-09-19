@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ПРОЖАРКА — бар-ресторан в Среднеуральске</title>
+<meta name="description" content="ПРОЖАРКА — премиальный бар-ресторан в Среднеуральске. Авторская кухня, коктейли, атмосфера вечернего города." />
+<meta name="theme-color" content="#080808" />
+<style>
+:root{
+  --bg:#080808; --bg-2:#111111; --bg-3:#171717;
+  --red:#D90429; --red-bright:#FF1744;
+  --text:#F5F5F5; --muted:#A0A0A0;
+  --line:rgba(255,255,255,.08);
+  --radius:18px; --container:1240px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img{display:block;max-width:100%;height:auto;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+::selection{background:var(--red);color:#fff;}
+
+.container{width:100%;max-width:var(--container);margin:0 auto;padding:0 24px;}
+
+.display{
+  font-family:'Segoe UI',Roboto,Arial,sans-serif;
+  font-weight:800; letter-spacing:-.02em; line-height:1.05;
+  text-transform:uppercase;
+}
+h1.display{font-size:clamp(2.8rem,9vw,7rem);}
+h2.display{font-size:clamp(1.9rem,5vw,3.6rem);}
+
+.eyebrow{font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.eyebrow.red{color:var(--red-bright);}
+.muted{color:var(--muted);}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:16px 34px; border-radius:100px;
+  font-weight:600; font-size:.95rem; letter-spacing:.04em;
+  text-transform:uppercase; transition:all .35s ease;
+  position:relative; overflow:hidden; white-space:nowrap;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:var(--red-bright);transform:translateY(-2px);box-shadow:0 12px 40px rgba(217,4,41,.45);}
+.btn-red:active{transform:translateY(0);}
+.btn-ghost{border:1px solid rgba(255,255,255,.25);color:var(--text);background:rgba(255,255,255,.02);}
+.btn-ghost:hover{border-color:var(--red-bright);color:#fff;background:rgba(217,4,41,.12);transform:translateY(-2px);}
+.btn-sm{padding:12px 24px;font-size:.82rem;}
+
+/* ШАПКА */
+.header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:20px 0;transition:all .4s ease;
+  background:linear-gradient(to bottom,rgba(8,8,8,.85),transparent);
+}
+.header.scrolled{padding:12px 0;background:rgba(8,8,8,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+.header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;letter-spacing:.06em;text-transform:uppercase;}
+.logo-mark{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--red-bright),var(--red) 60%,#5a0010);box-shadow:0 0 18px rgba(255,23,68,.55);position:relative;flex-shrink:0;}
+.logo-mark::after{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--bg);}
+.logo span{color:var(--red-bright);}
+
+.nav{display:flex;align-items:center;gap:32px;}
+.nav a{font-size:.9rem;font-weight:500;color:var(--muted);position:relative;transition:color .3s;cursor:pointer;}
+.nav a::after{content:'';position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--red-bright);transition:width .35s ease;}
+.nav a:hover{color:var(--text);}
+.nav a:hover::after{width:100%;}
+
+.header-actions{display:flex;align-items:center;gap:16px;}
+
+.burger{
+  display:none;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);
+  align-items:center;justify-content:center;flex-direction:column;gap:5px;
+  transition:all .3s;cursor:pointer;
+}
+.burger span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all .35s ease;}
+.burger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.burger.active span:nth-child(2){opacity:0;}
+.burger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+.mobile-menu{
+  position:fixed;inset:0;background:rgba(8,8,8,.98);
+  backdrop-filter:blur(20px);z-index:999;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:100px 32px 40px;opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+}
+.mobile-menu.open{opacity:1;pointer-events:auto;}
+.mobile-menu nav{display:flex;flex-direction:column;gap:8px;}
+.mobile-menu nav a{
+  font-weight:700;font-size:1.6rem;text-transform:uppercase;
+  padding:14px 0;border-bottom:1px solid var(--line);
+  transform:translateY(20px);opacity:0;transition:all .4s ease;cursor:pointer;
+}
+.mobile-menu.open nav a{transform:translateY(0);opacity:1;}
+.mobile-menu nav a:nth-child(1){transition-delay:.05s;}
+.mobile-menu nav a:nth-child(2){transition-delay:.1s;}
+.mobile-menu nav a:nth-child(3){transition-delay:.15s;}
+.mobile-menu nav a:nth-child(4){transition-delay:.2s;}
+.mobile-menu nav a:nth-child(5){transition-delay:.25s;}
+.mobile-menu nav a:nth-child(6){transition-delay:.3s;}
+.mobile-menu .btn{margin-top:36px;}
+
+.floating-book{
+  position:fixed;bottom:20px;left:20px;right:20px;z-index:900;
+  display:none;padding:18px;border-radius:100px;
+  font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.9rem;
+  background:var(--red);color:#fff;text-align:center;
+  box-shadow:0 14px 40px rgba(217,4,41,.5);
+  transition:transform .3s ease;cursor:pointer;
+}
+.floating-book:active{transform:scale(.97);}
+
+/* HERO */
+.hero{
+  position:relative;min-height:100vh;min-height:100svh;
+  display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 30%,rgba(217,4,41,.25),transparent 60%),
+    radial-gradient(ellipse at 20% 80%,rgba(255,23,68,.12),transparent 50%),
+    linear-gradient(135deg,#0a0a0a 0%,#1a0608 40%,#080808 100%);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 2px,transparent 2px 8px),
+    radial-gradient(circle at 80% 20%,rgba(217,4,41,.18),transparent 40%);
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:2;padding:120px 24px 80px;max-width:900px;}
+.hero-content .eyebrow{margin-bottom:26px;}
+.hero h1{margin-bottom:24px;text-shadow:0 4px 40px rgba(0,0,0,.6);}
+.hero-tagline{font-size:clamp(1.05rem,2.2vw,1.5rem);margin-bottom:14px;font-weight:400;}
+.hero-sub{color:var(--muted);font-size:clamp(.95rem,1.4vw,1.1rem);max-width:560px;margin:0 auto 40px;}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.scroll-hint{
+  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:2;
+  font-size:.7rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.scroll-hint .line{width:1px;height:38px;background:linear-gradient(to bottom,var(--red-bright),transparent);animation:scrollLine 2s infinite ease;}
+
+@keyframes scrollLine{
+  0%{transform:scaleY(0);transform-origin:top;}
+  50%{transform:scaleY(1);transform-origin:top;}
+  51%{transform-origin:bottom;}
+  100%{transform:scaleY(0);transform-origin:bottom;}
+}
+
+/* СЕКЦИИ */
+section{position:relative;}
+.section{padding:120px 0;}
+.section-head{margin-bottom:64px;max-width:720px;}
+.section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+.section-head .eyebrow{margin-bottom:18px;}
+.section-head h2{margin-bottom:16px;}
+.section-head p{color:var(--muted);font-size:1.05rem;}
+
+/* О ПРОЖАРКЕ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;}
+.about-text h2{margin-bottom:26px;}
+.about-text p{color:var(--muted);font-size:1.08rem;margin-bottom:18px;max-width:520px;}
+.about-img{
+  position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/5;
+  background:linear-gradient(135deg,#1a1a1a,#0d0d0d 60%,#2a0a0e);
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+}
+.about-img::before{
+  content:'🍽';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:6rem;opacity:.15;
+}
+.about-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,.6),transparent 50%);}
+.about-img .badge{position:absolute;bottom:24px;left:24px;z-index:2;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red-bright);font-weight:600;}
+
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:80px;}
+.feature{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:32px 26px;transition:all .4s ease;position:relative;overflow:hidden;}
+.feature::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red-bright),transparent);transform:scaleX(0);transition:transform .4s ease;}
+.feature:hover{transform:translateY(-6px);border-color:rgba(217,4,41,.35);background:var(--bg-3);}
+.feature:hover::before{transform:scaleX(1);}
+.feature .num{font-size:.75rem;color:var(--red-bright);letter-spacing:.2em;margin-bottom:18px;display:block;font-weight:700;}
+.feature h4{font-size:1.05rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;}
+.feature p{color:var(--muted);font-size:.92rem;}
+
+/* МЕНЮ */
+.menu-section{background:var(--bg-2);}
+.menu-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:50px;}
+.menu-tab{
+  padding:12px 26px;border-radius:100px;border:1px solid var(--line);
+  color:var(--muted);font-size:.88rem;font-weight:500;
+  transition:all .35s ease;white-space:nowrap;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.menu-tab:hover{color:var(--text);border-color:rgba(255,255,255,.25);}
+.menu-tab.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 8px 30px rgba(217,4,41,.4);}
+
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:26px;}
+.menu-card{
+  background:var(--bg-3);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;transition:all .4s ease;display:flex;flex-direction:column;
+}
+.menu-card:hover{transform:translateY(-8px);border-color:rgba(217,4,41,.4);box-shadow:0 30px 60px rgba(0,0,0,.5);}
+.menu-card-img{
+  aspect-ratio:4/3;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a1a1a,#0d0d0d 60%,#2a0a0e);
+  display:flex;align-items:center;justify-content:center;font-size:3.5rem;opacity:.9;
+}
+.menu-card-body{padding:22px;flex:1;display:flex;flex-direction:column;}
+.menu-card-body .cat{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red-bright);margin-bottom:10px;font-weight:600;}
+.menu-card-body h4{font-size:1.05rem;margin-bottom:8px;font-weight:700;}
+.menu-card-body p{color:var(--muted);font-size:.88rem;flex:1;}
+.menu-card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+.price{font-size:.95rem;color:var(--text);font-weight:700;}
+.demo-note{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:28px;text-align:center;opacity:.7;}
+
+/* АТМОСФЕРА */
+.atmosphere{
+  position:relative;min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 60%,rgba(217,4,41,.35),transparent 55%),
+    linear-gradient(135deg,#0d0505,#1a0608 50%,#080808);
+}
+.atmosphere::before{
+  content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 10px);
+}
+.atmosphere-content{position:relative;z-index:2;padding:100px 24px;}
+.atmosphere-content h2{margin-bottom:34px;max-width:900px;}
+
+/* ГАЛЕРЕЯ */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:16px;}
+.gallery-item{
+  position:relative;overflow:hidden;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,#1a1a1a,#0d0d0d 60%,#2a0a0e);
+  display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.85;
+}
+.gallery-item:hover{opacity:1;transform:scale(1.02);}
+.gallery-item::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,.7),transparent 60%);opacity:0;transition:opacity .4s;}
+.gallery-item:hover::after{opacity:1;}
+.gallery-item .cap{
+  position:absolute;left:18px;bottom:16px;z-index:2;font-size:.72rem;
+  letter-spacing:.2em;text-transform:uppercase;color:#fff;font-weight:600;
+  transform:translateY(10px);opacity:0;transition:all .4s ease;
+}
+.gallery-item:hover .cap{transform:translateY(0);opacity:1;}
+.g-tall{grid-row:span 2;}
+.g-wide{grid-column:span 2;}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;inset:0;background:rgba(8,8,8,.96);backdrop-filter:blur(10px);
+  z-index:2000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .4s ease;padding:40px;
+}
+.lightbox.open{opacity:1;pointer-events:auto;}
+.lightbox-box{
+  width:min(90vw,700px);aspect-ratio:4/3;border-radius:12px;
+  background:linear-gradient(135deg,#1a1a1a,#2a0a0e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:5rem;box-shadow:0 40px 100px rgba(0,0,0,.8);
+  color:var(--red-bright);font-weight:700;
+  transform:scale(.94);transition:transform .4s ease;
+}
+.lightbox.open .lightbox-box{transform:scale(1);}
+.lightbox-close{
+  position:absolute;top:26px;right:26px;width:52px;height:52px;border-radius:50%;
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;color:var(--text);transition:all .3s;cursor:pointer;
+}
+.lightbox-close:hover{background:var(--red);border-color:var(--red);transform:rotate(90deg);}
+
+/* БРОНИРОВАНИЕ */
+.booking{background:var(--bg-2);}
+.booking-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:70px;align-items:center;}
+.booking-info h2{margin-bottom:22px;}
+.booking-info p{color:var(--muted);font-size:1.05rem;margin-bottom:30px;max-width:420px;}
+.booking-perks{display:flex;flex-direction:column;gap:16px;list-style:none;}
+.booking-perks li{display:flex;align-items:center;gap:14px;color:var(--text);font-size:.95rem;}
+.booking-perks li::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--red-bright);box-shadow:0 0 12px var(--red-bright);flex-shrink:0;}
+
+.booking-form{background:var(--bg-3);border:1px solid var(--line);border-radius:24px;padding:44px;position:relative;overflow:hidden;}
+.booking-form::before{content:'';position:absolute;top:-100px;right:-100px;width:260px;height:260px;background:radial-gradient(circle,rgba(217,4,41,.25),transparent 70%);pointer-events:none;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.field{display:flex;flex-direction:column;gap:8px;}
+.field.full{grid-column:span 2;}
+.field label{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.field input,.field select,.field textarea{
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;color:var(--text);font-family:inherit;font-size:.95rem;
+  transition:all .3s;outline:none;width:100%;
+}
+.field textarea{resize:vertical;min-height:90px;}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--red-bright);background:rgba(217,4,41,.06);box-shadow:0 0 0 3px rgba(217,4,41,.12);
+}
+.field input::placeholder,.field textarea::placeholder{color:rgba(160,160,160,.5);}
+.field select{appearance:none;cursor:pointer;padding-right:40px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23A0A0A0' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
+.booking-form .btn-red{width:100%;margin-top:26px;padding:18px;}
+
+.form-success{
+  position:absolute;inset:0;background:var(--bg-3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px;opacity:0;pointer-events:none;
+  transition:opacity .5s ease;z-index:5;
+}
+.form-success.show{opacity:1;pointer-events:auto;}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(217,4,41,.12);border:1px solid var(--red);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:26px;font-size:2rem;color:var(--red-bright);
+  box-shadow:0 0 40px rgba(217,4,41,.4);animation:pop .5s ease;
+}
+@keyframes pop{0%{transform:scale(.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.form-success h3{margin-bottom:12px;}
+.form-success p{color:var(--muted);max-width:320px;}
+.form-success .btn{margin-top:28px;}
+
+/* CTA */
+.cta{text-align:center;padding:140px 0;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(217,4,41,.16),transparent 65%);pointer-events:none;}
+.cta h2{font-size:clamp(2rem,6vw,4.6rem);margin-bottom:44px;position:relative;z-index:2;line-height:1.1;}
+.cta .btn{position:relative;z-index:2;padding:22px 56px;font-size:1.05rem;}
+
+/* ОТЗЫВЫ */
+.reviews{background:var(--bg-2);overflow:hidden;}
+.reviews-slider{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:20px;scrollbar-width:none;-ms-overflow-style:none;}
+.reviews-slider::-webkit-scrollbar{display:none;}
+.review-card{
+  flex:0 0 380px;scroll-snap-align:start;
+  background:var(--bg-3);border:1px solid var(--line);border-radius:var(--radius);
+  padding:34px;transition:all .4s ease;
+}
+.review-card:hover{border-color:rgba(217,4,41,.35);transform:translateY(-6px);}
+.stars{color:var(--red-bright);font-size:.95rem;letter-spacing:3px;margin-bottom:18px;}
+.review-card blockquote{font-size:1rem;color:var(--text);line-height:1.7;margin-bottom:24px;font-style:normal;}
+.review-author{display:flex;align-items:center;gap:14px;padding-top:20px;border-top:1px solid var(--line);}
+.review-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#5a0010);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;flex-shrink:0;
+}
+.review-author .name{font-weight:600;font-size:.95rem;}
+.review-author .role{font-size:.78rem;color:var(--muted);}
+.slider-hint{text-align:center;margin-top:30px;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
+
+/* КОНТАКТЫ */
+.contacts-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:60px;}
+.contacts-info h2{margin-bottom:34px;}
+.contact-item{padding:22px 0;border-bottom:1px solid var(--line);}
+.contact-item:first-of-type{border-top:1px solid var(--line);}
+.contact-item .label{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.contact-item .value{font-size:1.05rem;font-weight:400;}
+.contact-item .value a:hover{color:var(--red-bright);}
+.contact-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;}
+.map-wrap{
+  border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  min-height:460px;position:relative;
+  background:
+    radial-gradient(circle at 30% 40%,rgba(217,4,41,.15),transparent 50%),
+    linear-gradient(135deg,#1a1a1a,#0d0d0d 60%,#2a0a0e);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;text-align:center;padding:40px;
+}
+.map-wrap::before{
+  content:'📍';font-size:4rem;filter:drop-shadow(0 0 20px rgba(217,4,41,.5));
+}
+.map-wrap p{color:var(--muted);max-width:280px;}
+
+/* FOOTER */
+.footer{background:var(--bg-2);border-top:1px solid var(--line);padding:70px 0 30px;}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:50px;margin-bottom:50px;}
+.footer .logo{margin-bottom:16px;}
+.footer-about p{color:var(--muted);font-size:.92rem;max-width:300px;margin-bottom:24px;}
+.socials{display:flex;gap:12px;}
+.social{
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:.78rem;
+  font-weight:600;color:var(--muted);transition:all .4s ease;
+}
+.social:hover{border-color:var(--red);color:#fff;background:var(--red);transform:translateY(-3px);}
+.footer-col h5{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:22px;font-weight:700;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.footer-col a{color:var(--text);font-size:.92rem;transition:color .3s;cursor:pointer;}
+.footer-col a:hover{color:var(--red-bright);}
+.footer-bottom{border-top:1px solid var(--line);padding-top:26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--muted);}
+.footer-legal{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-legal a:hover{color:var(--text);}
+
+/* АНИМАЦИИ ПОЯВЛЕНИЯ */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.1s;}
+.reveal-delay-2{transition-delay:.2s;}
+.reveal-delay-3{transition-delay:.3s;}
+
+/* АДАПТИВ */
+@media (max-width:1024px){
+  .about-grid{grid-template-columns:1fr;gap:40px;}
+  .about-img{aspect-ratio:16/10;max-height:480px;}
+  .features{grid-template-columns:repeat(2,1fr);}
+  .booking-wrap{grid-template-columns:1fr;gap:40px;}
+  .contacts-grid{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-about{grid-column:span 2;}
+}
+@media (max-width:768px){
+  .nav,.header-actions .btn{display:none;}
+  .burger{display:flex;}
+  .floating-book{display:block;}
+  .section{padding:80px 0;}
+  .hero-content{padding:100px 20px 60px;}
+  .features{grid-template-columns:1fr;}
+  .menu-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .field.full{grid-column:span 1;}
+  .booking-form{padding:28px 22px;}
+  .review-card{flex:0 0 300px;padding:26px;}
+  .cta{padding:90px 0;}
+  .footer-grid{grid-template-columns:1fr;gap:34px;}
+  .footer-about{grid-column:span 1;}
+  .footer-bottom{flex-direction:column;align-items:flex-start;}
+  .gallery-grid{grid-auto-rows:150px;gap:10px;}
+  .lightbox{padding:20px;}
+  .lightbox-close{top:16px;right:16px;width:44px;height:44px;}
+  body{padding-bottom:86px;}
+}
+@media (max-width:480px){
+  .hero-actions{flex-direction:column;width:100%;}
+  .hero-actions .btn{width:100%;}
+  .menu-tabs{justify-content:flex-start;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;}
+  .menu-tabs::-webkit-scrollbar{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ШАПКА -->
+<header class="header" id="header">
+  <div class="container">
+    <a href="#hero" class="logo" data-scroll="hero" aria-label="ПРОЖАРКА — на главную">
+      <span class="logo-mark" aria-hidden="true"></span>
+      ПРО<span>ЖАРКА</span>
+    </a>
+    <nav class="nav" aria-label="Основная навигация">
+      <a data-scroll="hero">Главная</a>
+      <a data-scroll="about">О ресторане</a>
+      <a data-scroll="menu">Меню</a>
+      <a data-scroll="gallery">Галерея</a>
+      <a data-scroll="reviews">Отзывы</a>
+      <a data-scroll="contacts">Контакты</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-red btn-sm" data-scroll="booking">Забронировать столик</a>
+      <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- МОБИЛЬНОЕ МЕНЮ -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+  <nav>
+    <a data-scroll="hero">Главная</a>
+    <a data-scroll="about">О ресторане</a>
+    <a data-scroll="menu">Меню</a>
+    <a data-scroll="gallery">Галерея</a>
+    <a data-scroll="reviews">Отзывы</a>
+    <a data-scroll="contacts">Контакты</a>
+  </nav>
+  <a class="btn btn-red" data-scroll="booking">Забронировать столик</a>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <p class="eyebrow red reveal">Бар • Ресторан • Среднеуральск</p>
+    <h1 class="display reveal reveal-delay-1">Прожарка</h1>
+    <p class="hero-tagline reveal reveal-delay-2">Место, где вечер только начинается.</p>
+    <p class="hero-sub reveal reveal-delay-2">Авторская кухня, напитки, атмосфера и вечера, которые хочется повторить.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a class="btn btn-red" data-scroll="booking">Забронировать столик</a>
+      <a class="btn btn-ghost" data-scroll="menu">Посмотреть меню</a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Scroll to explore</span>
+    <span class="line"></span>
+  </div>
+</section>
+
+<!-- О ПРОЖАРКЕ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="eyebrow red">О прожарке</p>
+        <h2 class="display">Больше, чем просто бар</h2>
+        <p>«ПРОЖАРКА» — это место для тех, кто ценит хорошую еду, качественные напитки и правильную атмосферу.</p>
+        <p>Здесь можно начать вечер с ужина, продолжить его любимым коктейлем и остаться до самого закрытия.</p>
+      </div>
+      <div class="about-img reveal reveal-delay-1">
+        <span class="badge">Среднеуральск</span>
+      </div>
+    </div>
+    <div class="features">
+      <div class="feature reveal"><span class="num">01</span><h4>Атмосфера</h4><p>Премиальный интерьер и настроение вечернего города.</p></div>
+      <div class="feature reveal reveal-delay-1"><span class="num">02</span><h4>Кухня</h4><p>Блюда, которые хочется попробовать снова.</p></div>
+      <div class="feature reveal reveal-delay-2"><span class="num">03</span><h4>Бар</h4><p>Напитки для спокойного вечера и шумных встреч.</p></div>
+      <div class="feature reveal reveal-delay-3"><span class="num">04</span><h4>Музыка</h4><p>Правильный саундтрек для каждого вечера.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- МЕНЮ -->
+<section class="section menu-section" id="menu">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow red">Меню</p>
+      <h2 class="display">Вкус, который запоминается</h2>
+      <p>Выберите категорию — и откройте для себя блюда и напитки, которые станут частью вашего вечера.</p>
+    </div>
+    <div class="menu-tabs reveal" id="menuTabs" role="tablist" aria-label="Категории меню"></div>
+    <div class="menu-grid" id="menuGrid"></div>
+    <p class="demo-note">Демонстрационное наполнение — замените на актуальное меню заведения.</p>
+  </div>
+</section>
+
+<!-- АТМОСФЕРА -->
+<section class="atmosphere">
+  <div class="atmosphere-content reveal">
+    <h2 class="display">Вкусный вечер начинается здесь</h2>
+    <a class="btn btn-red" data-scroll="booking">Забронировать столик</a>
+  </div>
+</section>
+
+<!-- ГАЛЕРЕЯ -->
+<section class="section" id="gallery">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow red">Галерея</p>
+      <h2 class="display">Посмотри внутри</h2>
+    </div>
+    <div class="gallery-grid reveal" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- БРОНИРОВАНИЕ -->
+<section class="section booking" id="booking">
+  <div class="container">
+    <div class="booking-wrap">
+      <div class="booking-info reveal">
+        <p class="eyebrow red">Бронирование</p>
+        <h2 class="display">Забронируй свой вечер</h2>
+        <p>Выберите удобную дату и время — мы подготовим для вас столик.</p>
+        <ul class="booking-perks">
+          <li>Подтверждение по телефону или в мессенджере</li>
+          <li>Учтём пожелания по посадке и поводу визита</li>
+          <li>Для больших компаний — отдельный запрос</li>
+        </ul>
+      </div>
+      <div class="booking-form reveal reveal-delay-1">
+        <form id="bookingForm" novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="name">Имя</label><input type="text" id="name" name="name" placeholder="Как к вам обращаться" required autocomplete="name" /></div>
+            <div class="field"><label for="phone">Телефон</label><input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel" /></div>
+            <div class="field"><label for="date">Дата</label><input type="date" id="date" name="date" required /></div>
+            <div class="field"><label for="time">Время</label><input type="time" id="time" name="time" required /></div>
+            <div class="field"><label for="guests">Количество гостей</label>
+              <select id="guests" name="guests" required>
+                <option value="" disabled selected>Выберите</option>
+                <option value="1">1 гость</option><option value="2">2 гостя</option>
+                <option value="3">3 гостя</option><option value="4">4 гостя</option>
+                <option value="5">5 гостей</option><option value="6">6 гостей</option>
+                <option value="7+">7 и более</option>
+              </select>
+            </div>
+            <div class="field"><label for="occasion">Повод (необязательно)</label><input type="text" id="occasion" name="occasion" placeholder="Свидание, день рождения…" /></div>
+            <div class="field full"><label for="comment">Комментарий</label><textarea id="comment" name="comment" placeholder="Пожелания по столику, аллергии, особый случай…"></textarea></div>
+          </div>
+          <button type="submit" class="btn btn-red">Забронировать</button>
+        </form>
+        <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+          <div class="success-icon" aria-hidden="true">✓</div>
+          <h3 class="display">Заявка отправлена</h3>
+          <p>Мы свяжемся с вами для подтверждения бронирования.</p>
+          <button type="button" class="btn btn-ghost btn-sm" id="resetForm">Новая заявка</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container reveal">
+    <h2 class="display">Твой вечер.<br>Твоя компания.<br>Твоя прожарка.</h2>
+    <a class="btn btn-red" data-scroll="booking">Забронировать столик</a>
+  </div>
+</section>
+
+<!-- ОТЗЫВЫ -->
+<section class="section reviews" id="reviews">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow red">Отзывы</p>
+      <h2 class="display">Гости говорят</h2>
+    </div>
+  </div>
+  <div class="container">
+    <div class="reviews-slider reveal" id="reviewsSlider"></div>
+    <p class="slider-hint">Листайте вправо →</p>
+  </div>
+</section>
+
+<!-- КОНТАКТЫ -->
+<section class="section" id="contacts">
+  <div class="container">
+    <div class="contacts-grid">
+      <div class="contacts-info reveal">
+        <p class="eyebrow red">Контакты</p>
+        <h2 class="display">Ждём вас</h2>
+        <div class="contact-item">
+          <div class="label">Заведение</div>
+          <div class="value">ПРОЖАРКА — бар-ресторан<br><span class="muted" style="font-size:.95rem;">Среднеуральск</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Телефон</div>
+          <div class="value"><a href="tel:+70000000000">[УКАЗАТЬ ТЕЛЕФОН]</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Адрес</div>
+          <div class="value">[УКАЗАТЬ АДРЕС]</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Время работы</div>
+          <div class="value">[УКАЗАТЬ ВРЕМЯ РАБОТЫ]</div>
+        </div>
+        <div class="contact-actions">
+          <a href="tel:+70000000000" class="btn btn-red btn-sm">Позвонить</a>
+          <a class="btn btn-ghost btn-sm" data-scroll="booking">Забронировать столик</a>
+          <a href="https://yandex.ru/maps/?text=Среднеуральск" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Показать на карте</a>
+        </div>
+      </div>
+      <div class="map-wrap reveal reveal-delay-1">
+        <p>Интерактивная карта будет здесь. Подключите Яндекс.Карты или Google Maps.</p>
+        <a href="https://yandex.ru/maps/?text=Среднеуральск" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Открыть карту</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a class="logo" data-scroll="hero">
+          <span class="logo-mark" aria-hidden="true"></span>
+          ПРО<span>ЖАРКА</span>
+        </a>
+        <p>Бар-ресторан • Среднеуральск</p>
+        <div class="socials">
+          <a href="#" class="social" aria-label="Telegram">TG</a>
+          <a href="#" class="social" aria-label="ВКонтакте">VK</a>
+          <a href="#" class="social" aria-label="Instagram">IG</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Навигация</h5>
+        <ul>
+          <li><a data-scroll="hero">Главная</a></li>
+          <li><a data-scroll="about">О ресторане</a></li>
+          <li><a data-scroll="menu">Меню</a></li>
+          <li><a data-scroll="gallery">Галерея</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Гостям</h5>
+        <ul>
+          <li><a data-scroll="booking">Бронь</a></li>
+          <li><a data-scroll="contacts">Контакты</a></li>
+          <li><a data-scroll="reviews">Отзывы</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© ПРОЖАРКА, 2026</span>
+      <div class="footer-legal">
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Пользовательское соглашение</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a class="floating-book" data-scroll="booking" aria-label="Забронировать столик">Забронировать столик</a>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фото">
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Закрыть">✕</button>
+  <div class="lightbox-box" id="lightboxBox">🍽</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  /* ===== ПЛАВНЫЙ СКРОЛЛ ПО КЛИКУ (работает везде) ===== */
+  function scrollToId(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var headerH = header ? header.offsetHeight : 0;
+    var top = el.getBoundingClientRect().top + window.pageYOffset - headerH - 10;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('[data-scroll]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var id = el.getAttribute('data-scroll');
+
+      // закрыть мобильное меню, если открыто
+      if (mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        burger.classList.remove('active');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      scrollToId(id);
+    });
+  });
+
+  /* ===== ШАПКА ПРИ СКРОЛЛЕ ===== */
+  var header = document.getElementById('header');
+  var onScroll = function () {
+    if (window.scrollY > 40) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ===== БУРГЕР ===== */
+  var burger = document.getElementById('burger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', function () {
+    var open = mobileMenu.classList.toggle('open');
+    burger.classList.toggle('active', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  /* ===== REVEAL ON SCROLL ===== */
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  /* ===== МЕНЮ ===== */
+  var menuData = [
+    {cat:'Закуски', name:'Брускетта с томатами', desc:'Хрустящий хлеб, свежие томаты, базилик, оливковое масло.', icon:'🍞'},
+    {cat:'Закуски', name:'Сырная тарелка', desc:'Ассорти сыров с медом, орехами и джемом.', icon:'🧀'},
+    {cat:'Салаты', name:'Салат с ростбифом', desc:'Свежая зелень, ростбиф, черри, горчичная заправка.', icon:'🥗'},
+    {cat:'Салаты', name:'Цезарь с курицей', desc:'Романо, курица гриль, пармезан, гренки, соус цезарь.', icon:'🥬'},
+    {cat:'Горячие блюда', name:'Паста с креветками', desc:'Спагетти, тигровые креветки, сливочный соус, шпинат.', icon:'🍝'},
+    {cat:'Горячие блюда', name:'Ризотто с грибами', desc:'Арборио, белые грибы, пармезан, трюфельное масло.', icon:'🍚'},
+    {cat:'Мясо', name:'Стейк из говядины', desc:'Мраморная говядина, розмарин, чеснок, морская соль.', icon:'🥩'},
+    {cat:'Мясо', name:'Ребра BBQ', desc:'Свиные ребра, соус барбекю, печеный картофель.', icon:'🍖'},
+    {cat:'Бургеры', name:'Фирменный бургер', desc:'Котлета из мраморной говядины, чеддер, соус, булочка.', icon:'🍔'},
+    {cat:'Бургеры', name:'Чикен бургер', desc:'Хрустящая курица, свежие овощи, соус, булочка бриошь.', icon:'🍗'},
+    {cat:'Десерты', name:'Чизкейк', desc:'Нежный чизкейк с ягодным соусом.', icon:'🍰'},
+    {cat:'Десерты', name:'Шоколадный фондан', desc:'Тёплый шоколадный фондан с мороженым.', icon:'🍫'},
+    {cat:'Коктейли', name:'Авторский коктейль', desc:'Фирменный коктейль бармена. Состав уточняйте у официанта.', icon:'🍸'},
+    {cat:'Коктейли', name:'Классический мохито', desc:'Ром, лайм, мята, содовая, лёд.', icon:'🍹'},
+    {cat:'Напитки', name:'Лимонад', desc:'Домашний лимонад с цитрусами и мятой.', icon:'🥤'},
+    {cat:'Напитки', name:'Кофе', desc:'Свежесваренный кофе: эспрессо, капучино, латте.', icon:'☕'}
+  ];
+  var categories = ['all','Закуски','Салаты','Горячие блюда','Мясо','Бургеры','Десерты','Коктейли','Напитки'];
+  var catLabels = {all:'Все', 'Закуски':'Закуски','Салаты':'Салаты','Горячие блюда':'Горячие блюда','Мясо':'Мясо','Бургеры':'Бургеры','Десерты':'Десерты','Коктейли':'Коктейли','Напитки':'Напитки'};
+
+  var menuGrid = document.getElementById('menuGrid');
+  var menuTabs = document.getElementById('menuTabs');
+
+  categories.forEach(function (cat, i) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'menu-tab' + (i === 0 ? ' active' : '');
+    btn.textContent = catLabels[cat];
+    btn.setAttribute('data-cat', cat);
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    btn.addEventListener('click', function () {
+      menuTabs.querySelectorAll('.menu-tab').forEach(function (t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      renderMenu(cat);
+    });
+    menuTabs.appendChild(btn);
+  });
+
+  function renderMenu(cat) {
+    menuGrid.innerHTML = '';
+    var items = cat === 'all' ? menuData : menuData.filter(function (i) { return i.cat === cat; });
+    items.forEach(function (item) {
+      var card = document.createElement('article');
+      card.className = 'menu-card';
+      card.innerHTML =
+        '<div class="menu-card-img">' + item.icon + '</div>' +
+        '<div class="menu-card-body">' +
+          '<span class="cat">' + item.cat + '</span>' +
+          '<h4>' + item.name + '</h4>' +
+          '<p>' + item.desc + '</p>' +
+          '<div class="menu-card-foot"><span class="price">[ЦЕНА]</span></div>' +
+        '</div>';
+      menuGrid.appendChild(card);
+    });
+  }
+  renderMenu('all');
+
+  /* ===== ГАЛЕРЕЯ + LIGHTBOX ===== */
+  var galleryData = [
+    {icon:'🏛', cap:'Зал', cls:'g-tall'},
+    {icon:'🍸', cap:'Бар', cls:''},
+    {icon:'🍽', cap:'Блюдо', cls:''},
+    {icon:'🌃', cap:'Атмосфера', cls:'g-wide'},
+    {icon:'🍹', cap:'Коктейль', cls:''},
+    {icon:'🕯', cap:'Детали', cls:''},
+    {icon:'👥', cap:'Гости', cls:'g-wide'},
+    {icon:'🥩', cap:'Кухня', cls:''}
+  ];
+  var galleryGrid = document.getElementById('galleryGrid');
+  galleryData.forEach(function (g) {
+    var el = document.createElement('div');
+    el.className = 'gallery-item ' + g.cls;
+    el.innerHTML = '<span>' + g.icon + '</span><span class="cap">' + g.cap + '</span>';
+    el.addEventListener('click', function () { openLightbox(g.icon, g.cap); });
+    galleryGrid.appendChild(el);
+  });
+
+  var lightbox = document.getElementById('lightbox');
+  var lightboxBox = document.getElementById('lightboxBox');
+  var lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(icon, cap) {
+    lightboxBox.textContent = icon;
+    lightboxBox.setAttribute('title', cap);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+
+  /* ===== БРОНИРОВАНИЕ ===== */
+  var bookingForm = document.getElementById('bookingForm');
+  var formSuccess = document.getElementById('formSuccess');
+  var resetBtn = document.getElementById('resetForm');
+
+  bookingForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var date = document.getElementById('date').value;
+    var time = document.getElementById('time').value;
+
+    if (!name || !phone || !date || !time) {
+      alert('Пожалуйста, заполните обязательные поля: имя, телефон, дата и время.');
+      return;
+    }
+
+    // Демо-логирование. Здесь можно подключить Telegram / WhatsApp / CRM / email.
+    console.log('Новая заявка на бронирование:', {
+      name: name, phone: phone, date: date, time: time,
+      guests: document.getElementById('guests').value,
+      occasion: document.getElementById('occasion').value,
+      comment: document.getElementById('comment').value
+    });
+
+    formSuccess.classList.add('show');
+  });
+
+  resetBtn.addEventListener('click', function () {
+    formSuccess.classList.remove('show');
+    bookingForm.reset();
+  });
+
+  /* ===== ОТЗЫВЫ ===== */
+  var reviewsData = [
+    {name:'Гость', role:'placeholder-отзыв', rating:'★★★★★', text:'Здесь можно разместить реальный отзыв гостя. Атмосфера, кухня и сервис — всё на высшем уровне.'},
+    {name:'Гость', role:'placeholder-отзыв', rating:'★★★★★', text:'Отличное место для вечера с друзьями. Красивая подача, вкусные коктейли и приятная музыка.'},
+    {name:'Гость', role:'placeholder-отзыв', rating:'★★★★★', text:'Идеально для свидания: приглушённый свет, стильный интерьер и внимательное обслуживание.'},
+    {name:'Гость', role:'placeholder-отзыв', rating:'★★★★★', text:'Премиальный уровень для Среднеуральска. Вернёмся ещё не раз — хочется попробовать всё меню.'}
+  ];
+  var reviewsSlider = document.getElementById('reviewsSlider');
+  reviewsData.forEach(function (r) {
+    var card = document.createElement('article');
+    card.className = 'review-card';
+    card.innerHTML =
+      '<div class="stars" aria-label="Оценка 5 из 5">' + r.rating + '</div>' +
+      '<blockquote>«' + r.text + '»</blockquote>' +
+      '<div class="review-author">' +
+        '<div class="review-avatar">' + r.name.charAt(0) + '</div>' +
+        '<div><div class="name">' + r.name + '</div><div class="role">' + r.role + '</div></div>' +
+      '</div>';
+    reviewsSlider.appendChild(card);
+  });
+});
+</script>
+
+</body>
+</html>
